@@ -40,7 +40,9 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect("openMongo")
+  .connect(
+    "mongodb+srv://noyflaysher:Noy12345678@cluster0.aib29ax.mongodb.net/Bakery?retryWrites=true&w=majority"
+  )
   .then(() => {
     app.listen(3001, () => console.log("listen to port 3001"));
   })
