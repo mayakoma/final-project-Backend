@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const addOrder = async (req, res, next) => {
   const { userId, orderDate, productsList } = req.body;
 
-  // products= products'list & amount
+  // products= products' list & amount
   // product= tmp product from Product Schema
 
   let products,
@@ -67,3 +67,5 @@ const addOrder = async (req, res, next) => {
 
   res.status(201).json({ order: createdOrder.toObject({ getters: true }) });
 };
+
+exports.addOrder = addOrder;
