@@ -9,6 +9,7 @@ const orderRoute = require("./routes/orders-route");
 const adminRoute = require("./routes/admin-route");
 
 const app = express();
+mongoose.set("strictQuery", false);
 
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -21,10 +22,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/user", userRoute);
-app.use("/product", productRoute);
-app.use("/order", orderRoute);
-app.use("/admin", adminRoute);
+// app.use("/user", userRoute);
+// app.use("/product", productRoute);
+// app.use("/order", orderRoute);
+// app.use("/admin", adminRoute);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could  not find this route", 404);

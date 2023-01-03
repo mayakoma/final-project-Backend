@@ -27,7 +27,6 @@ const signup = async (req, res, next) => {
     fullName,
     area,
     gender,
-    orders: [],
   });
 
   try {
@@ -149,7 +148,7 @@ const findByArea = async (req, res, next) => {
 const getUsers = async (req, res, next) => {
   let users;
   try {
-    users = await User.find({});
+    users = await User.find({}, -password);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find any users.",
