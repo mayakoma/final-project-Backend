@@ -132,10 +132,10 @@ const deleteUser = async (req, res, next) => {
 };
 
 const findByArea = async (req, res, next) => {
-  const area = req.body;
+  const { area } = req.body;
   let users;
   try {
-    users = await User.find({ area: area });
+    users = await User.find({ area: area }, "-password");
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find any users.",
@@ -149,7 +149,7 @@ const findByArea = async (req, res, next) => {
 const getUsers = async (req, res, next) => {
   let users;
   try {
-    users = await User.find({}, -password);
+    users = await User.find({}, "-password");
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find any users.",

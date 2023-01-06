@@ -22,7 +22,7 @@ router.post("/login", usersControllers.login);
 // update
 router.patch("/update", usersControllers.updateUser);
 //delete
-router.post("/delete", usersControllers.deleteUser);
+router.delete("/delete", usersControllers.deleteUser);
 //serch by 1 filter
 router.post("/findByArea", usersControllers.findByArea);
 
