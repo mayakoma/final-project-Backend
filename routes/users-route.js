@@ -4,7 +4,7 @@ const usersControllers = require("../controllers/users-controllers");
 
 const router = express.Router();
 // get all users
-router.get("getUsers", usersControllers.getUsers);
+router.get("/getUsers", usersControllers.getUsers);
 //signup with validators
 router.post(
   "/signup",
