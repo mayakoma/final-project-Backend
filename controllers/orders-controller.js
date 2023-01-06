@@ -131,7 +131,27 @@ const updateOrder = async (req, res, next) => {
   res.status(201).json({ order: order.toObject({ getters: true }) });
 };
 
-const deleteOrder = async (req, res, next) => {};
+const deleteOrder = async (req, res, next) => {
+  const { orderId } = req.body;
+  let order, orderDetail;
+
+  try {
+    order = await Order.find({ orderDetailesId: orderId });
+    orderDetail = await OrderDetails.findById(orderId);
+  } catch (err) {}
+
+  for (let i = 0; i < order.length; i++) {
+    try {
+      await order[i].remove();
+    } catch (err) {}
+  }
+
+  try {
+    await orderDetail.remove();
+  } catch (err) {}
+
+  res.status(200).json({ message: "Deleted order" });
+};
 const getOrders = async (req, res, next) => {
   let orders;
   try {
