@@ -1,6 +1,6 @@
 const HttpError = require("../model/HttpError");
 const User = require("../model/users");
-const Orders = require("../model/orders");
+const Orders = require("../model/ordersDetails");
 const Products = require("../model/products");
 const mongoose = require("mongoose");
 

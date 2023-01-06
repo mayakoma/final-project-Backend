@@ -1,9 +1,9 @@
 const HttpError = require("../model/HttpError");
 const User = require("../model/users");
-const Orders = require("../model/orders");
+const Orders = require("../model/ordersDetails");
 
 const signup = async (req, res, next) => {
-  const { email, password, fullName, area, gender } = req.body;
+  const { email, password, userName, area, gender } = req.body;
   let existingUser;
 
   try {
@@ -24,7 +24,7 @@ const signup = async (req, res, next) => {
   const createdUser = new User({
     email,
     password,
-    fullName,
+    userName,
     area,
     gender,
   });
@@ -60,7 +60,7 @@ const login = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
-  const { userId, password, fullName, area, gender } = req.body;
+  const { userId, password, userName, area, gender } = req.body;
 
   let user;
   try {
@@ -74,7 +74,7 @@ const updateUser = async (req, res, next) => {
   }
 
   user.password = password;
-  user.fullName = fullName;
+  user.userName = userName;
   user.area = area;
   user.gender = gender;
 
