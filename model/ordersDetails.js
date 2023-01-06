@@ -6,6 +6,7 @@ const ordersDetailesSchema = new Schema({
   userId: { type: mongoose.Types.ObjectId, required: true, ref: "Users" },
   orderDate: { type: Date, required: true },
   totalPrice: { type: Number, required: true },
+  address: { type: String, required: true },
 });
 ordersDetailesSchema.plugin(uniqueValidator);
 

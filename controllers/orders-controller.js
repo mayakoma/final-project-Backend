@@ -7,7 +7,7 @@ const Products = require("../model/products");
 //const mongoose = require("mongoose");
 
 const addOrder = async (req, res, next) => {
-  const { userId, productsList } = req.body;
+  const { userId, productsList, address } = req.body;
 
   // find the user at User schema
   let user;
@@ -31,6 +31,7 @@ const addOrder = async (req, res, next) => {
     userId: user,
     orderDate: new Date(),
     totalPrice: 0,
+    address,
   });
 
   //add order to mongo
@@ -81,9 +82,9 @@ const addOrder = async (req, res, next) => {
       return next(error);
     }
   }
-  createdOrder.totalPrice = price;
-  console.log(price);
+
   try {
+    createdOrder.totalPrice = price;
     await createdOrder.save();
   } catch (err) {
     const error = new HttpError(
@@ -92,7 +93,74 @@ const addOrder = async (req, res, next) => {
     );
     return next(error);
   }
+
   res.status(201).json({ order: createdOrder.toObject({ getters: true }) });
 };
 
+const updateOrder = async (req, res, next) => {
+  const { orderId, address } = req.body;
+  let order;
+  try {
+    order = await OrderDetails.findById(orderId);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, cannot update order",
+      500
+    );
+    return next(error);
+  }
+
+  if (!order) {
+    const error = new HttpError(
+      "Something went wrong, cannot update order",
+      500
+    );
+    return next(error);
+  }
+
+  try {
+    order.address = address;
+    await order.save();
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, cannot update order",
+      500
+    );
+    return next(error);
+  }
+  res.status(201).json({ order: order.toObject({ getters: true }) });
+};
+
+const deleteOrder = async (req, res, next) => {};
+const getOrders = async (req, res, next) => {
+  let orders;
+  try {
+    orders = await OrderDetails.find({});
+  } catch (err) {}
+
+  let fullOrder = [],
+    ordersProducts;
+  for (let i = 0; i < orders.length; i++) {
+    try {
+      ordersProducts = await Order.find(
+        {
+          orderDetailesId: orders[i]._id.toString(),
+        },
+        "-orderDetailesId"
+      );
+    } catch (err) {
+      const error = new HttpError(
+        "Something went wrong, cannot get orders",
+        500
+      );
+      return next(error);
+    }
+    fullOrder.push({ orderDetailes: orders[i], Products: ordersProducts });
+  }
+
+  res.status(201).json({ orderData: fullOrder });
+};
 exports.addOrder = addOrder;
+exports.updateOrder = updateOrder;
+exports.deleteOrder = deleteOrder;
+exports.getOrders = getOrders;
