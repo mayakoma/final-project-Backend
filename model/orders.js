@@ -14,7 +14,6 @@ const ordersSchema = new Schema({
     ref: "Products",
   },
   amount: { type: Number, require: true },
-  totalPrice: { type: Number, required: true },
 });
 ordersSchema.plugin(uniqueValidator);
 
