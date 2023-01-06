@@ -7,7 +7,7 @@ const Products = require("../model/products");
 //const mongoose = require("mongoose");
 
 const addOrder = async (req, res, next) => {
-  const { userId, orderDate, productsList } = req.body;
+  const { userId, productsList } = req.body;
 
   // find the user at User schema
   let user;
@@ -29,8 +29,8 @@ const addOrder = async (req, res, next) => {
   //create orderDetails
   const createdOrder = new OrderDetails({
     userId: user,
-    orderDate,
-    price: 0,
+    orderDate: new Date(),
+    totalPrice: 0,
   });
 
   //add order to mongo
@@ -41,14 +41,18 @@ const addOrder = async (req, res, next) => {
     const error = new HttpError("creating order failed.", 500);
     return next(error);
   }
+  console.log("order details done");
 
   // add the product &  amount to orders tbl
   let product,
+    productObject,
     price = 0,
     pid;
+
   for (let i = 0; i < productsList.length; i++) {
     try {
       pid = productsList[i].product;
+      console.log(pid);
       product = await Products.findById(pid).populate("price");
     } catch (err) {
       const error = new HttpError(
@@ -57,7 +61,8 @@ const addOrder = async (req, res, next) => {
       );
       return next(error);
     }
-    product = new Order({
+
+    productObject = new Order({
       orderDetailesId: orderID,
       product,
       amount: productsList[i].amount,
@@ -67,7 +72,7 @@ const addOrder = async (req, res, next) => {
 
     //save order
     try {
-      await product.save();
+      await productObject.save();
     } catch (err) {
       const error = new HttpError(
         "Creating order failed, please try again.- create order",
@@ -76,8 +81,10 @@ const addOrder = async (req, res, next) => {
       return next(error);
     }
   }
+  createdOrder.totalPrice = price;
+  console.log(price);
   try {
-    await createdOrder.update({ price: price });
+    await createdOrder.save();
   } catch (err) {
     const error = new HttpError(
       "Creating order failed, please try again. update order price",

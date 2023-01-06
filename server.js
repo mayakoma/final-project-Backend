@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 app.use("/user", userRoute);
 app.use("/product", productRoute);
-// app.use("/order", orderRoute);
+app.use("/order", orderRoute);
 // app.use("/admin", adminRoute);
 
 app.use((req, res, next) => {
