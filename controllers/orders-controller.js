@@ -180,7 +180,10 @@ const getOrders = async (req, res, next) => {
 
   res.status(201).json({ orderData: fullOrder });
 };
+
+const getOrdersByProducts = async (req, res, next) => {};
 exports.addOrder = addOrder;
 exports.updateOrder = updateOrder;
 exports.deleteOrder = deleteOrder;
 exports.getOrders = getOrders;
+exports.getOrdersByProducts = getOrdersByProducts;
