@@ -85,12 +85,13 @@ const updateUser = async (req, res, next) => {
       "Something went wrong, cannot update user (saving user)",
       500
     );
+    return next(error);
   }
   res.status(200).json({ user: user.toObject({ getters: true }) });
 };
 
 const deleteUser = async (req, res, next) => {
-  const userId = req.body;
+  const { userId } = req.body;
   let user;
   try {
     user = await User.findById(userId);

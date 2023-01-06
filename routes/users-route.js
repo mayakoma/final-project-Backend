@@ -1,4 +1,3 @@
-const { RotateRight } = require("@mui/icons-material");
 const express = require("express");
 const { check } = require("express-validator");
 const usersControllers = require("../controllers/users-controllers");
