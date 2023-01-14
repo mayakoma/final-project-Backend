@@ -178,7 +178,7 @@ const getOrders = async (req, res, next) => {
     fullOrder.push({ orderDetailes: orders[i], Products: ordersProducts });
   }
 
-  res.status(201).json({ orderData: fullOrder });
+  res.status(201).json(fullOrder);
 };
 
 const getOrdersByProducts = async (req, res, next) => {};
