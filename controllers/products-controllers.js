@@ -131,3 +131,4 @@ exports.addProduct = addProduct;
 exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
 exports.getProducts = getProducts;
+exports.searchProductByFilter = searchProductByFilter;
