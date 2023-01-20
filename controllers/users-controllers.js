@@ -60,7 +60,7 @@ const login = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
-  const { userId, password, userName, area, gender } = req.body;
+  const { userId, userName, area, gender } = req.body;
 
   let user;
   try {
@@ -73,7 +73,6 @@ const updateUser = async (req, res, next) => {
     return next(error);
   }
 
-  user.password = password;
   user.userName = userName;
   user.area = area;
   user.gender = gender;
@@ -159,6 +158,14 @@ const getUsers = async (req, res, next) => {
   }
   res.json(users);
 };
+
+// const searchUserByFilter = async (req, res, next) => {
+//   const { userName = "", area = "", gender = "" } = req.body;
+//   let user;
+//   try {
+//     user = await User.find({});
+//   } catch (err) {}
+// };
 
 exports.signup = signup;
 exports.login = login;
