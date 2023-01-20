@@ -106,6 +106,27 @@ const getProducts = async (req, res, next) => {
   res.json(products);
 };
 
+const searchProductByFilter = async (req, res, next) => {
+  const { title } = req.body;
+  let product;
+  try {
+    product = await Products.find({
+      title: { $regex: `${title}`, $options: "i" },
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find any products.",
+      500
+    );
+    return next(error);
+  }
+  if (!product) {
+    const error = new HttpError("could not find Products", 500);
+    return next(error);
+  }
+  res.json(product);
+};
+
 exports.addProduct = addProduct;
 exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
