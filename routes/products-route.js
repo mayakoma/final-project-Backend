@@ -13,4 +13,5 @@ router.delete("/delete", productsController.deleteProduct);
 
 router.post("/search", productsController.searchProductByFilter);
 
+router.post("/getById", productsController.getProductById);
 module.exports = router;

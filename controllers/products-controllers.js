@@ -106,6 +106,21 @@ const getProducts = async (req, res, next) => {
   res.json(products);
 };
 
+const getProductById = async (req, res, next) => {
+  const { pid } = req.body;
+  let product;
+  try {
+    product = await Products.findById(pid);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find any products.",
+      500
+    );
+    return next(error);
+  }
+  res.json(product);
+};
+
 const searchProductByFilter = async (req, res, next) => {
   const { title } = req.body;
   let product;
@@ -132,3 +147,4 @@ exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
 exports.getProducts = getProducts;
 exports.searchProductByFilter = searchProductByFilter;
+exports.getProductById = getProductById;
