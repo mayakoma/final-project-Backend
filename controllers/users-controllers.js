@@ -159,13 +159,16 @@ const getUsers = async (req, res, next) => {
   res.json(users);
 };
 
-// const searchUserByFilter = async (req, res, next) => {
-//   const { userName = "", area = "", gender = "" } = req.body;
-//   let user;
-//   try {
-//     user = await User.find({});
-//   } catch (err) {}
-// };
+const searchUserByFilter = async (req, res, next) => {
+  const { userName, area, gender } = req.body;
+  if (area == null || !area) {
+    area = ["center"];
+  }
+  let user;
+  try {
+    user = await User.find({});
+  } catch (err) {}
+};
 
 exports.signup = signup;
 exports.login = login;
