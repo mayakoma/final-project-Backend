@@ -60,7 +60,7 @@ const login = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
-  const { userId, userName, area, gender } = req.body;
+  const { userId, userName, area } = req.body;
 
   let user;
   try {
@@ -75,7 +75,7 @@ const updateUser = async (req, res, next) => {
 
   user.userName = userName;
   user.area = area;
-  user.gender = gender;
+  // user.gender = gender;
 
   try {
     await user.save();
@@ -155,6 +155,7 @@ const getUsers = async (req, res, next) => {
       500
     );
     return next(error);
+    console.log("delete");
   }
   res.json(users);
 };

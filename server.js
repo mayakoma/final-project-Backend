@@ -1,14 +1,33 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
 const HttpError = require("./model/HttpError");
 const userRoute = require("./routes/users-route");
 const productRoute = require("./routes/products-route");
 const orderRoute = require("./routes/orders-route");
 const adminRoute = require("./routes/admin-route");
-
 const app = express();
+
+/////socket-io
+
+const http = require("http");
+const { Server } = require("socket.io");
+const cors = require("cors");
+// const port = process.env.PORT || 3001;
+app.use(cors());
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+
+let users = 0;
+
+///////
+
 mongoose.set("strictQuery", false);
 
 app.use(bodyParser.json());
@@ -45,6 +64,17 @@ mongoose
     "mongodb+srv://noyflaysher:Noy12345678@cluster0.aib29ax.mongodb.net/Bakery?retryWrites=true&w=majority"
   )
   .then(() => {
-    app.listen(3001, () => console.log("listen to port 3001"));
+    server.listen(3001, () => console.log("listen to port 3001"));
+    io.on("connection", (socket) => {
+      users++;
+      console.log(`num of users: ${users}`);
+      socket.emit("userNumber", users);
+
+      socket.on("disconnect", () => {
+        users--;
+        console.log(`num of users: ${users}`);
+        socket.emit("userNumber", users);
+      });
+    });
   })
   .catch((err) => console.log(err));
