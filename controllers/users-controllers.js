@@ -161,14 +161,13 @@ const getUsers = async (req, res, next) => {
 const searchUserByFilter = async (req, res, next) => {
   let { userName, area, gender } = req.body;
 
-  console.log(`user name: ${userName}, area:${area} gender:  ${gender}`);
   if (area == null || !area) {
     area = ["center", "north", "south"];
   }
   if (gender == null || !gender) {
     gender = ["women", "men"];
   }
-  console.log(`user name: ${userName}, area:${area} gender:  ${gender}`);
+
   let user;
   try {
     user = await User.find({

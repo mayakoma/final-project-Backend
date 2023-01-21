@@ -11,14 +11,3 @@ const ordersDetailesSchema = new Schema({
 ordersDetailesSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model("OrdersDetailes", ordersDetailesSchema);
-
-// productsList: [
-//   {
-//     product: {
-//       type: mongoose.Types.ObjectId,
-//       required: true,
-//       ref: "Products",
-//     },
-//     amount: { type: Number, require: true },
-//   },
-// ],

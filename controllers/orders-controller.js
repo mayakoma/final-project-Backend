@@ -182,8 +182,34 @@ const getOrders = async (req, res, next) => {
 };
 
 const getOrdersByProducts = async (req, res, next) => {};
+
+const getOrersByFilters = async (req, res, next) => {
+  let { orderDate, untilOrderDate, totalPrice, address } = req.body;
+  // orderDate = Date(orderDate);
+  if (address == null) address = "";
+  if (totalPrice == null) totalPrice = 0;
+  let order;
+  try {
+    order = await OrderDetails.find({
+      address: { $regex: `${address}`, $options: "i" },
+      orderDate: {
+        $gte: new Date(`${orderDate}T00:00:00.000Z`),
+        $lt: new Date(`${untilOrderDate}T00:00:00.000Z`),
+      },
+      totalPrice: { $gte: totalPrice },
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find any orders.",
+      500
+    );
+    return next(error);
+  }
+  res.json(order);
+};
 exports.addOrder = addOrder;
 exports.updateOrder = updateOrder;
 exports.deleteOrder = deleteOrder;
 exports.getOrders = getOrders;
 exports.getOrdersByProducts = getOrdersByProducts;
+exports.getOrersByFilters = getOrersByFilters;

@@ -6,5 +6,5 @@ router.post("/add", orderController.addOrder);
 router.patch("/update", orderController.updateOrder);
 router.delete("/delete", orderController.deleteOrder);
 router.get("/getOrders", orderController.getOrders);
-
+router.post("/search", orderController.getOrersByFilters);
 module.exports = router;
