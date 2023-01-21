@@ -25,5 +25,7 @@ router.patch("/update", usersControllers.updateUser);
 router.delete("/delete", usersControllers.deleteUser);
 //serch by 1 filter
 router.post("/findByArea", usersControllers.findByArea);
+//search by 3 filter
+router.post("/search", usersControllers.searchUserByFilter);
 
 module.exports = router;

@@ -60,7 +60,7 @@ const login = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
-  const { userId, userName, area, gender } = req.body;
+  const { userId, userName, area } = req.body;
 
   let user;
   try {
@@ -75,7 +75,6 @@ const updateUser = async (req, res, next) => {
 
   user.userName = userName;
   user.area = area;
-  user.gender = gender;
 
   try {
     await user.save();
@@ -160,14 +159,31 @@ const getUsers = async (req, res, next) => {
 };
 
 const searchUserByFilter = async (req, res, next) => {
-  const { userName, area, gender } = req.body;
+  let { userName, area, gender } = req.body;
+
+  console.log(`user name: ${userName}, area:${area} gender:  ${gender}`);
   if (area == null || !area) {
-    area = ["center"];
+    area = ["center", "north", "south"];
   }
+  if (gender == null || !gender) {
+    gender = ["women", "men"];
+  }
+  console.log(`user name: ${userName}, area:${area} gender:  ${gender}`);
   let user;
   try {
-    user = await User.find({});
-  } catch (err) {}
+    user = await User.find({
+      userName: { $regex: `${userName}`, $options: "i" },
+      area: { $in: [...area] },
+      gender: { $in: [...gender] },
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find any users.",
+      500
+    );
+    return next(error);
+  }
+  res.json(user);
 };
 
 exports.signup = signup;
@@ -176,3 +192,4 @@ exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
 exports.findByArea = findByArea;
 exports.getUsers = getUsers;
+exports.searchUserByFilter = searchUserByFilter;
