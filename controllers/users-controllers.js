@@ -155,6 +155,7 @@ const getUsers = async (req, res, next) => {
       500
     );
     return next(error);
+    console.log("delete");
   }
   res.json(users);
 };
