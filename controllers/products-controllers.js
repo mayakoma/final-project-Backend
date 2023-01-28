@@ -25,7 +25,7 @@ const addProduct = async (req, res, next) => {
 };
 
 const updateProduct = async (req, res, next) => {
-  const { pid, title, description, image, price } = req.body;
+  const { pid, title, description, price } = req.body;
 
   let product;
   try {
@@ -46,7 +46,6 @@ const updateProduct = async (req, res, next) => {
   product.title = title;
   product.description = description;
   product.price = price;
-  product.image = image;
 
   try {
     await product.save();

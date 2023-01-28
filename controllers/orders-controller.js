@@ -99,9 +99,15 @@ const addOrder = async (req, res, next) => {
 
 const updateOrder = async (req, res, next) => {
   const { orderId, address } = req.body;
+  console.log(address);
+  console.log(orderId);
   let order;
   try {
     order = await OrderDetails.findById(orderId);
+    if (order) console.log(order);
+    else {
+      console.log("not found");
+    }
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, cannot update order",
@@ -112,16 +118,16 @@ const updateOrder = async (req, res, next) => {
 
   if (!order) {
     const error = new HttpError(
-      "Something went wrong, cannot update order",
+      "Something went wrong, cannot update order not fount id",
       500
     );
     return next(error);
   }
-
+  order.address = address;
   try {
-    order.address = address;
     await order.save();
   } catch (err) {
+    console.log("catch");
     const error = new HttpError(
       "Something went wrong, cannot update order",
       500
@@ -139,6 +145,8 @@ const deleteOrder = async (req, res, next) => {
     order = await Order.find({ orderDetailesId: orderId });
     orderDetail = await OrderDetails.findById(orderId);
   } catch (err) {}
+
+  if (order.length == 0) return;
 
   for (let i = 0; i < order.length; i++) {
     try {
