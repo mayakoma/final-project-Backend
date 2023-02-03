@@ -52,7 +52,7 @@ const addOrder = async (req, res, next) => {
 
   for (let i = 0; i < productsList.length; i++) {
     try {
-      pid = productsList[i].product;
+      pid = productsList[i].id;
       console.log(pid);
       product = await Products.findById(pid).populate("price");
     } catch (err) {
@@ -189,9 +189,62 @@ const getOrders = async (req, res, next) => {
   res.status(201).json(fullOrder);
 };
 
-const getOrdersByProducts = async (req, res, next) => {};
+const getOrdersByProducts = async (req, res, next) => {
+  let list;
+  try {
+    list = await Order.aggregate([
+      {
+        $lookup: {
+          from: "products",
+          localField: "product",
+          foreignField: "_id",
+          as: "productInfo",
+        },
+      },
+      {
+        $group: {
+          _id: "$product",
+          totalAmount: { $sum: "$amount" },
+          productTitle: { $first: "$productInfo.title" },
+        },
+      },
+    ]);
+  } catch (err) {
+    const error = new HttpError("Something went wrong, cannot get orders", 500);
+    return next(error);
+  }
+
+  res.status(201).json(list);
+};
+
+const getOrersByFilters = async (req, res, next) => {
+  let { orderDate, untilOrderDate, totalPrice, address } = req.body;
+  // orderDate = Date(orderDate);
+  if (address == null) address = "";
+  if (totalPrice == null) totalPrice = 0;
+  let order;
+  try {
+    order = await OrderDetails.find({
+      address: { $regex: `${address}`, $options: "i" },
+      orderDate: {
+        $gte: orderDate,
+        $lt: untilOrderDate,
+      },
+      totalPrice: { $gte: totalPrice },
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find any orders.",
+      500
+    );
+    return next(error);
+  }
+  res.json(order);
+};
+
 exports.addOrder = addOrder;
 exports.updateOrder = updateOrder;
 exports.deleteOrder = deleteOrder;
 exports.getOrders = getOrders;
 exports.getOrdersByProducts = getOrdersByProducts;
+exports.getOrersByFilters = getOrersByFilters;

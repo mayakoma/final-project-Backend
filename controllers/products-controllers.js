@@ -2,9 +2,10 @@ const HttpError = require("../model/HttpError");
 const Products = require("../model/products");
 
 const addProduct = async (req, res, next) => {
-  const { title, description, image, price } = req.body;
+  const { index, title, description, image, price } = req.body;
 
   const createdProduct = new Products({
+    index,
     title,
     description,
     image,
