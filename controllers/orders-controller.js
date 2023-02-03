@@ -52,7 +52,7 @@ const addOrder = async (req, res, next) => {
 
   for (let i = 0; i < productsList.length; i++) {
     try {
-      pid = productsList[i].product;
+      pid = productsList[i].id;
       console.log(pid);
       product = await Products.findById(pid).populate("price");
     } catch (err) {
@@ -99,9 +99,15 @@ const addOrder = async (req, res, next) => {
 
 const updateOrder = async (req, res, next) => {
   const { orderId, address } = req.body;
+  console.log(address);
+  console.log(orderId);
   let order;
   try {
     order = await OrderDetails.findById(orderId);
+    if (order) console.log(order);
+    else {
+      console.log("not found");
+    }
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, cannot update order",
@@ -112,16 +118,16 @@ const updateOrder = async (req, res, next) => {
 
   if (!order) {
     const error = new HttpError(
-      "Something went wrong, cannot update order",
+      "Something went wrong, cannot update order not fount id",
       500
     );
     return next(error);
   }
-
+  order.address = address;
   try {
-    order.address = address;
     await order.save();
   } catch (err) {
+    console.log("catch");
     const error = new HttpError(
       "Something went wrong, cannot update order",
       500
@@ -139,6 +145,8 @@ const deleteOrder = async (req, res, next) => {
     order = await Order.find({ orderDetailesId: orderId });
     orderDetail = await OrderDetails.findById(orderId);
   } catch (err) {}
+
+  if (order.length == 0) return;
 
   for (let i = 0; i < order.length; i++) {
     try {
@@ -178,12 +186,65 @@ const getOrders = async (req, res, next) => {
     fullOrder.push({ orderDetailes: orders[i], Products: ordersProducts });
   }
 
-  res.status(201).json({ orderData: fullOrder });
+  res.status(201).json(fullOrder);
 };
 
-const getOrdersByProducts = async (req, res, next) => {};
+const getOrdersByProducts = async (req, res, next) => {
+  let list;
+  try {
+    list = await Order.aggregate([
+      {
+        $lookup: {
+          from: "products",
+          localField: "product",
+          foreignField: "_id",
+          as: "productInfo",
+        },
+      },
+      {
+        $group: {
+          _id: "$product",
+          totalAmount: { $sum: "$amount" },
+          productTitle: { $first: "$productInfo.title" },
+        },
+      },
+    ]);
+  } catch (err) {
+    const error = new HttpError("Something went wrong, cannot get orders", 500);
+    return next(error);
+  }
+
+  res.status(201).json(list);
+};
+
+const getOrersByFilters = async (req, res, next) => {
+  let { orderDate, untilOrderDate, totalPrice, address } = req.body;
+  // orderDate = Date(orderDate);
+  if (address == null) address = "";
+  if (totalPrice == null) totalPrice = 0;
+  let order;
+  try {
+    order = await OrderDetails.find({
+      address: { $regex: `${address}`, $options: "i" },
+      orderDate: {
+        $gte: orderDate,
+        $lt: untilOrderDate,
+      },
+      totalPrice: { $gte: totalPrice },
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find any orders.",
+      500
+    );
+    return next(error);
+  }
+  res.json(order);
+};
+
 exports.addOrder = addOrder;
 exports.updateOrder = updateOrder;
 exports.deleteOrder = deleteOrder;
 exports.getOrders = getOrders;
 exports.getOrdersByProducts = getOrdersByProducts;
+exports.getOrersByFilters = getOrersByFilters;

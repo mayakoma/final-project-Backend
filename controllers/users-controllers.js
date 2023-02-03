@@ -60,7 +60,7 @@ const login = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
-  const { userId, password, userName, area, gender } = req.body;
+  const { userId, userName } = req.body;
 
   let user;
   try {
@@ -73,10 +73,8 @@ const updateUser = async (req, res, next) => {
     return next(error);
   }
 
-  user.password = password;
   user.userName = userName;
-  user.area = area;
-  user.gender = gender;
+  // user.gender = gender;
 
   try {
     await user.save();
@@ -156,8 +154,36 @@ const getUsers = async (req, res, next) => {
       500
     );
     return next(error);
+    console.log("delete");
   }
   res.json(users);
+};
+
+const searchUserByFilter = async (req, res, next) => {
+  let { userName, area, gender } = req.body;
+
+  if (area == null || !area || area == "" || area == "all") {
+    area = ["center", "north", "south"];
+  }
+  if (gender == null || !gender || gender == "" || gender == "all") {
+    gender = ["women", "men"];
+  }
+
+  let user;
+  try {
+    user = await User.find({
+      userName: { $regex: `${userName}`, $options: "i" },
+      area: { $in: [...area] },
+      gender: { $in: [...gender] },
+    });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find any users.",
+      500
+    );
+    return next(error);
+  }
+  res.json(user);
 };
 
 exports.signup = signup;
@@ -166,3 +192,4 @@ exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
 exports.findByArea = findByArea;
 exports.getUsers = getUsers;
+exports.searchUserByFilter = searchUserByFilter;
