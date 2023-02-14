@@ -3,9 +3,9 @@
 
 <h4>We used: </h4>
 <ul>
-<il>1. Node.js</il>
-<il>2. Express</il>
-<il>3. MongoDB</il>
-<il>4. SocketIO</il> 
-<il>5. Mongoose</il>
+<li>1. Node.js</li>
+<li>2. Express</li>
+<li>3. MongoDB</li>
+<li>4. SocketIO</li> 
+<li>5. Mongoose</li>
 </ul>
